@@ -1,0 +1,226 @@
+When the service provider was selected in the wizard，the SIP Server Address wasn't saved to configurations.
+commit提交格式：
+[wcf][X3][功能描述]Fixed issue #xxx, Add normal user restrict privilege of network settings and wizard。
+功能描述：BUG FIX，ENHANCE
+[WCF][X3][ENHANCE]Fixed issue #768, Add normal user restrict privilege.
+
+source insight设置tab键为4个空格
+1 Options->Document Options
+2 将 Visible tabs和Expand Tabs 打勾
+3 设置TAB width为4个空格
+
+git init初始化本地的git，完成后生产一个.git的文件
+git config --global user.name "Your Name" git下添加名字和Email地址
+git config --global user.email "email@example.com"
+
+ssh-keygen -t rsa -C "youremail@example.com"
+
+git remote add origin git@github.com:michaelliao/learngit.git
+\			github信息   git账       本地git信息
+
+其他修改内容的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，先用git pull把最新的提交从origin/dev抓下来，然后，在本地合并，解决冲突，再推送
+
+在github上是先fork一下，然后clone到本地进行修改，然后push到自己fork的仓库中，再在github上创建一个pull request，等待作者同意并merge
+user doesn't set the PIN，手里的难题
+
+git的完整格式：（注push和pull的本地和远程分支名的': '前后是没有空格的,shell命令中注意空格的使用，《精通正则表达式》提到空格可以当做shell的元字符，其作用是用来分割字符的，用来分割命令行参数的。如果加了空格，则说明空格前后是两个不同的参数，那对于原命令来说无疑是增加了空格的个数，而导致命令使用的错误）
+git pull <远程主机名> <远程分支名>:<本地分支名> 
+git clone <版本库的网址> <本地目录名>
+git remote add <主机名> <网址>
+git fetch <远程主机名> <分支名>
+git merge origin/master远程主机名/分支名
+git push <远程主机名> <本地分支名>:<远程分支名>
+git branch -a查看所有本地及远程分支
+git reflog可查看提交历史中的commit id可用来回退丢失的版本
+git checkout -b dev origin/dev可以创建远程分支的本地分支进行开发
+如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令
+git branch --set-upstream branch-name origin/branch-name
+git reset –mixed：此为默认方式，不带任何参数的git reset它回退到某个版本，只保留当前修改源码，回退commit和index信息
+
+.ignore配置文件配置忽略到版本库内容 path/*表示忽略path下所有的文件内容
+
+SSH第一次使用Git进行clone或者push会有如下警告
+The authenticity of host 'github.com (xx.xx.xx.xx)' can't be established.
+RSA key fingerprint is xx.xx.xx.xx.xx.
+Are you sure you want to continue connecting (yes/no)?
+
+Warning: Permanently added 'github.com' (RSA) to the list of known hosts.
+这个警告只会出现一次，后面的操作就不会有任何警告了。
+
+Git每次修改如果不add到暂存区，是不会加入到commit中的。
+
+
+if (!valid_ni(ni))
+{
+// program code
+...
+}
+repssn_ind = ssn_data[index].repssn_index;
+repssn_ni = ssn_data[index].ni
+
+if (!valid_ni(ni))
+{
+// program code
+...
+}
+repssn_ind = ssn_data[index].repssn_index;
+repssn_ni = ssn_data[index].ni;
+
+
+修改如下的权限
+/tools/ gen_localFinf_h.py gen_strList_c.py gen_strList_h.py gen_strOldList_c.py
+ /cygdrive/d/my_git/xcom/profile_chk.sh:
+
+
+项目
+#768
+scn_handle.h
+
+*scn_handle.c下新增：
+hdlStandbyScn和hdlStandbyMenuBar函数中增加
+eRetCode checkCurrentUser(){
+    tDbUserSchInfo schInfo;
+    uEvtMsg evtMsg;
+    schInfo.type = USER_SCH_BY_ID;
+    schInfo.info = dbGetActiveUserId(); 
+    dbGetUserInfo(&schInfo,&gUsrInfo);
+    if(gUsrInfo.type != 0){
+        evtMsg.tWarning.warningType = WARNING_USER_RESTRICT;
+        scnUpdate(SCN_WARNING,&evtMsg);
+        return RET_OK;
+    }
+    return RET_ERROR;
+}
+hdlWarningScn函数
+case WARNING_USER_RESTRICT:
+	set->curMenuId = MENU_WARNING;
+	labelSet->eventHandler = 	hdlUserRestrict;
+break; 
+增加函数hdlUserRestrict及声明
+
+scn_constant.h下WARNING_USER_RESTRICT
+以下文件是自动生成的
+scn_strList.h增加枚举XSTR_MSG_USER_RESTRICT,
+scn_strLTitle.c下增加{XSTR_MSG_USER_RESTRICT, "XSTR_MSG_USER_RESTRICT"},
+scn_strOldList.c下增加[XSTR_MSG_USER_RESTRICT]        =  "You have not got the privilege",
+
+case
+Iset->curMenuId = MENU_RETURN;只需调用MENU_RETURN即可
+labelSet->eventHandler = hdlUserRestrict;
+break; 
+
+提交修改的xls文件。
+
+scn_api.c增加函数
+int chkCurrentUserPrivilege(){
+    tUsrAttrInfo usrInfo;
+    tDbUserSchInfo schInfo;
+    schInfo.type = USER_SCH_BY_ID;
+    schInfo.info = dbGetActiveUserId(); 
+    dbGetUserInfo(&schInfo,&usrInfo);
+    return usrInfo.type;
+}
+
+#781
+dbGetActiveUserPasswd确定是否设置了密码
+
+SCN_UNLOCK  hdlUnlockScn 解锁处理函数
+  unlockScnSet 解锁界面  
+   hdlUnlockUserList
+    SCN_HELP
+     helpScnSet
+      hdlHelpList
+        hdlHelpListItem
+           getHelpList
+             standbyHelpList
+                  XSTR_HLP_PROF_LOCK_PHONE
+
+hdlTipsEditList
+hdlPinVal
+hdlUnlockPasswdInput输出pin错误提示
+
+appconf.c下的globalModuleConfig全局的一个配置文件
+gwIconTipsSet tips激活的全局配置
+gwIconTipsGet
+
+api.c下的调用函数
+setTipsEditActive激活对应的menu tips的复选框设置
+getTipsEditActive返回一个布尔值确定tips是否激活 gTipsEnable[TIPS_ACTIVE]
+关于tips部分的调用主函数
+SCN_SOFT_KEY_DENOTE
+            if(gwIconTipsGet() && isSoftKey){
+                if(softKeyDescrip(&evt)){
+                    taskDelay(SOFT_KEY_DENOTE_DUR);
+                    softKeyDescripOver();
+                }
+            }
+
+修改scn_control.c
+getSoftKeyDescIndex函数中增加
+char tmpPasswdBuf[USER_PIN_NUM+ 1]= {0};
+dbGetActiveUserPasswd(tmpPasswdBuf,sizeof(tmpPasswdBuf));
+                    if(strlen(tmpPasswdBuf) > 0){}；
+When the icon tips is actived，add a user PIN passward check.
+
+#784
+hdlWzdMenuBar下的X_WZD_ID_ACCOUNT
+进入MENU_WZD_CONFIG处理是wizard下的菜单栏处理
+
+hdlWzdLineCfgLabel获取标签内容
+SCN_WZD_LINE_EDIT
+SCN_WZD_LINE_CFG
+hdlWzdLineCfgList
+
+SIP_CONFIG_DATA sipConfData全局配置数据信息 
+代理信息数据PROXY_DATA
+sipSetRegisterServer设置对应provider service数据
+saveAccountVal保存账户的配置信息
+saveWzdLineEditVal
+
+
+uiConfigGeneralSavedScreen保存全局数据
+
+回调函数UI_LIST_OP_EDIT_SELECT下 
+uiListEditSave
+uiListEditProcess
+uiConfigProcess
+
+web目录下wizard.c下WizardSipRegAddr
+NETMODESET
+  getWzdLineCfgVal获取service provider的配置选项包括line service和manual
+
+修改scn_wzd.c下void saveWzdLineEditVal()
+增加setItspSvrIdx((tmpInfo->itsp) + 1)
+
+#my_self
+hdlStandbyMenuBar
+case X_KEY_AUDIO:
+
+hdlDialScn
+
+longPressEvtTrans
+case X_KEY_HEADSET:
+                    evt->evtType = EVT_KEY_RELEASE;
+                    evt->evtCode = X_KEY_CHAN_SWITCH;
+
+channelSwitch
+
+PHONE_CONF_DATA下
+int headsetFirst; /*0 use handsfree key default, 1 use headset key default*/
+int headsetAa;/*0 auto answer by HF, 1 auto answer by headset*/
+<PHONE CONFIG MODULE> Headset Key First
+void uiSetHeadsetKeyFirst(int value)
+
+                 uiSetHeadsetKeyFirst(0);
+                 printf("Attention please:setheadsetkeyfirst0\n");//printfadd
+                 uiSetHeadsetKeyFirst(1);
+                 printf("Attention please:setheadsetkeyfirst0\n");//printfadd
+
+core\dsp目录下voice.c
+voiceRingModeSelect
+
+#789
+hdlThreeWayCallEnd
+app目录下telService下
+telServerConferenceStart
+uiCallOperationExit
