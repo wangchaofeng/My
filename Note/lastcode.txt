@@ -1,0 +1,368 @@
+tornado工程项目中AppFullOvpn_C535、DspBw53、screenline中增加对应的宏C58_COTELL
+last code:
+44  14  23 10 0  11 21 50  40  4
+last key:
+254 151 31 63 41 33 3  34  7  253
+上面十个按键从左到右依次
+20  54   42  24   15
+32  152  64  251  61
+msg hold flash redial spk
+
+
+3   2   41  33  32  31  13  12  1   52
+49  50  51  52  53  54  55  56  57  48
+数字1-9和0
+
+53  51
+10  11
+*和#
+
+43  30  22
+47  39  46
+-vol mute vol+
+
+DvrKeypad.c
+下函数keypadTaskEntry
+增加函数showlastkeylist
+void showlastkeylist()
+{
+    printf("last code         lastkey\n");
+    printf("%d                 %d",codefortest,keyfortest);
+
+}
+#elif defined C58
+	#ifdef xxx
+    keymap[44] = MEMORY_1;
+    keymap[14] = MEMORY_2;
+    keymap[23] = MEMORY_3;
+    keymap[10] = MEMORY_4;
+    keymap[0]  = MEMORY_5;
+    keymap[11] = MEMORY_6;
+    keymap[21] = MEMORY_7;
+    keymap[50] = MEMORY_8;
+    keymap[40] = MEMORY_9;
+    keymap[4]  = MEMORY_10;
+
+    keymap[20] = KEY_MWI;
+    keymap[54] = KEY_HOLD;
+    keymap[42] = KEY_FLASH;
+    keymap[24] = KEY_REDIAL;
+    keymap[15] = KEY_HANDFREE
+    keymap[3]  = '1';
+    keymap[2]  = '2';
+    keymap[41] = '3';
+    keymap[33] = '4';
+    keymap[32] = '5';
+    keymap[31] = '6';
+    keymap[13] = '7';
+    keymap[12] = '8';
+    keymap[1]  = '9';
+    keymap[52] = '0';
+
+    keymap[53] = KEY_STAR;              /* '*' */
+    keymap[51] = KEY_POUND;             /* '#' */
+
+    keymap[43] =KEY_ALL_VOL_DOWN;
+    keymap[30] = KEY_MUTE;
+    keymap[22] =KEY_ALL_VOL_UP;
+    #endif
+
+
+#ifdefined C58 && !defined xxxx
+    keymap[3]  = '1';
+    keymap[2]  = '2';
+    keymap[41] = '3';
+    keymap[33] = '4';
+    keymap[32] = '5';
+    keymap[31] = '6';
+    keymap[13] = '7';
+    keymap[12] = '8';
+    keymap[1]  = '9';
+    keymap[52] = '0';
+
+    keymap[53] = KEY_STAR;              /* '*' */
+    keymap[51] = KEY_POUND;             /* '#' */
+
+    keymap[43] =KEY_ALL_VOL_DOWN;
+    
+    keymap[22] =KEY_ALL_VOL_UP;
+
+    
+1 检测MWI有语音时是否会亮 是
+2 MWI键值设置为memory key，默认设置为*78
+其他10个memory key默认设置为speed dial模式
+3摘挂机部分的测试验证调用dspGetHandSetStatus有检测到值的变化，摘机为1，挂机为0
+
+led.c下ledbigmapconstruct配置的ledmap的值
+ledRegInit初始化注册ledMap的值
+phone的screenline下的uiApi.c注册信号灯
+Bcmphone的Dsp目录下voice.c
+bcmphone下dsp目录下slicFunction.c文件SLICStatusCheck函数下headSetCheckValue
+修改SLICStatusCheck注释掉部分
+
+globalModuleConfig.powerLedForMwi设置是否用电源灯来指示MWI
+appConf.c下Powerlight for MWI设置
+gwGlobalModuleConfigFromDefault函数修改
+
+setCurrentConfLevel 9
+设置改level的值为9则将默认的MWI打开
+displayPowerControl 
+
+GLOBAL_CONFIG_DATA和PhoneConfdata
+screenline下uiSetConfig.c下*uiConfigSetMemoryKey和uiSetMemKeyNumer
+uiConfigSetMWINumber
+uiGetFunctionKeyType获取key的type类型
+uiSetFunctionKeyType设置key的type类型
+
+platform下appm目录下phoneConf.c下dsskey的一些保存文件
+setDsskeyItemTitle
+setDsskeyItemValue
+setDsskeyItemType
+
+FUNC_KEY_SPEED_DAIL
+platform下app下telServer.c下
+teleSpeedDialSet
+进阶
+screenline下uiConfig.c中gwPhoneConfModuleConfigFromDefault函数#elif defined C58中设置默认的启动值
+uiConfig.h中增加    
+uiFunctionKeySwitchRealKey
+uiGetSpeedDialRecord
+uiSetSpeedDialRecord
+uiSetMemKeyTitle
+Uiapi.h下SPD_ATTRIBUTE和MWI_ATTRIBUTE
+*78    @1    /m
+Value Line Subtype
+uiSetMemKeyNumer
+uiFuncKeyAttrNumber
+uiSetMwiPlayNumber
+uiSetSpeedDialRecord
+
+case  FUNC_KEY_MWI:
+sprintf(savedNumber, "%s@%d", number, externLine);
+strcat(savedNumber,MWI_ATTRIBUTE);
+uiSetMemKeyNumer(keyIndex,savedNumber);
+case  FUNC_KEY_MEMORY:
+sprintf(savedNumber, "%s@%d", number, externLine)
+strcat(savedNumber,SPD_ATTRIBUTE);
+uiSetMemKeyNumer(keyIndex,savedNumber);
+
+platform\app\include下Pubdefs.h下产品的product id的定义voipProductIdGet可根据不同的Id定制不同的key
+编译选项中修改对应的product id
+修改macros下的LIBS的路径
+
+函数define CXXX修改
+gwGlobalModuleConfigFromDefault    默认power灯语音信箱
+gwPhoneConfModuleConfigFromDefault 增加一些默认key设置
+增加PHONE_A628_C58_COTTEL
+mmiset1_svn、mmiset1_svn\html\functionkeyset.htm中
+  <!$%FUN_MemKeyTableInit#$> 
+  <!$%REPEAT(BEGIN,1,11)#$>的function key的值个数设置为11
+
+-DPID_NUM=0x32633132
+KEY_FROM_GPIO_MASK
+keyPadInit
+
+按键无法拨打电话
+TeleCenter下case TELE_HANDUP：
+user  fast dial number
+TeleCallError下TeleCallClose
+
+TeleCollectStart
+何时调用TeleCallClose
+TeleCallClose
+   TeleChanClose下设置当前状态为BUSY
+
+TeleHanddownHandle摘机处理
+
+uiCallInform
+
+setEtherStatus何处设置调用
+phyStatusChangeCallback
+
+uiCallPressKey(KEY_FLASH)
+uiCallGetCurrentStatus获取当前的状态  uiCallStatus电话时的全局数据信息
+
+修改
+                if(is_A628_C58_COTTEL() && teleChanIsRinging(anotherChan))
+                {
+                    printf("AAA Please..............................\n");
+                    teleCloseOneCallApi(uiCallCurrentIndex,0,0);
+                }
+                else
+                {
+                    teleModuleFlashStartApi(0,0,0);
+                }
+
+teleCloseOneCallApi
+
+TeleHanddownHandle(telChan, 1);
+setTeleChanCurrent(anotherChan);
+
+gwMmisetMaxNumber
+   UPLOAD_Central
+      UPLOAD_ReceiveObject中的sock建立的fd通信获取版本信息
+       gwUpdateFontFromFd
+       gwUpdateImageFromFd
+	gwUpdateMmisetOfImageFromFd
+	flashUpdateImageFromMemFd
+   flashUpdateFullImageFromFdBackup
+   flashUpdateImageFromFd跟新Image函数
+
+globalModuleConfig.mmiset  选用那套mmi
+appMmisetSet
+appMmisetInitReload
+gwSetlanuageSet
+mtMmisetFileUpdateFromUrl
+mmisetSaveByMtd
+mmisetLoadByMtd
+mmiGetPath
+增加了打包应用程序packetGen.sh
+
+修改CXXX名字为COTELL和一些productId的宏定义
+
+ConfSipModuleTable
+sipConfData
+sipGetEncFunction
+sipUserAgentEncFunctionSet设置对应的sip 根据对应的server type值
+sipLinetSetSipServerType
+
+修改
+sipApp.h下的server type的定义
+#define FORTINET     33
+mmiset下的html增加fortinet修改
+
+uiConfigKeyDownProcess KEY_DND下
+  portControlDisableDialIn  portControlDndSet根据sip line设置对应line的dnd模式根据传人的设置参数设置dnd
+    actionUrlSendOpenDND
+       informActionUrl
+        发送消息msgQ在actionUrlStart处处理消息内容
+                         actionUrlSend发送对应的URL
+  portConntrolEnableDialIn
+    actionUrlSendCloseDND
+       informActionUrl
+
+portControlDndSet
+    sipDndServiceRequest发送对应的sip消息到服务器
+        osip_dialog_new创建一条新的呼叫线路
+
+subscribe_request
+  sipFunctionCall
+     sipCallProcessTask下SIP_FUNC_CALL选项处理
+
+uiExtendedStatusInfoUpdate
+SIP_LINE_CONFIG下的dnd设置
+
+portControlSetDndMode
+sipLineSetDndStatus
+sipLineDndCodeSet
+sipLineDndCodeGet获取设置对应的dnd的code字符串内容
+
+sipGetEncFunction
+sipGetUaType
+sipGetSip1ServerType
+sipStart主函数
+    gwSipModuleConfigFromDefault配置一些sip部分的默认配置信息
+
+msg_startline_parse起始行解析
+    ICT, /**< Invite Client (outgoing) Transaction */
+    IST, /**< Invite Server (incoming) Transaction */
+    NICT,/**< Non-Invite Client (outgoing) Transaction */
+    NIST /**< Non-Invite Server (incoming) Transaction */
+platform\sip\sipcode\osipua\src下对应的四个模块处理不同的sip消息内容
+nist_callbacks.c下的划分不同的功能模块
+    notify
+    update
+    subscribe
+    bye
+    call
+    cancel
+    options
+    info
+    message
+通过其不同的功能函数实现不同的处理
+回调函数的处理到sipapp的应用层
+osip_dialog_compose_request
+osip_dialog_subscribe
+OsipUACallbackFunc  subscribe;回调函数
+notifySubScribler
+sipUserSubscribeCallStart
+    sipSubscribeDialogCreate
+
+sipDialogInfoSubscribe向服务器定制dialog的信息
+sipPickUpCallSubscribe
+sipLineSetMwiOption
+
+nist_subscribe_received收到的订阅信息处理
+
+notify_cb
+subscribe_cb
+informative_cb
+
+Phabricator
+Study and learn the relevant SIP protocol，familiar the DND subscribe process and try to do it.
+
+uiExtendedSiuCheck
+  case SIU_SUBTYPE_DND
+    sipDndStatusRequest
+	sipDndStatusRequestSubscribe
+sipUserStatusCancel
+
+notify下修改增加dndstatus的处理流程中调用getDndStatusInfoXmlContent
+sipDndStatusRequest(line, sipConfData.sipLine[line].phoneNumber, 0); //addbywcf
+
+notify_cb和informative_cb
+
+D:\voip\phone\bsp\phoneA628\svnProductVersion.c
+dos2unix: converting file md5digest to Unix format...
+grep （global search regular expression(RE) and print out the line
+
+uiFunctionKeySwitchRealKey函数实现functionkey到按键的映射
+invite_cb 下answer-after=处理intercome呼叫
+TELE_STATUS枚举类型下RECORDVOICE录音
+
+uiConfigSetDsskeyListProcess
+	uiGetExternLineNumber组成带线号码
+appLineCallActionDial
+	gwAppExternLineNumberUrl
+
+KEY_SEQUESCE_READIP_INDEX播报对应的ip
+uiFastKeyLockInform先长按#按键的操作锁键盘
+soundSentence
+keyCommandTextInit
+confReadNumber
+
+两个地方增加uiConfigKeyDownProcess和uicallkeydownprocess处理
+
+telChan = getCurrentTeleChanFromDspChan(port);
+    anotherChan = getSupTeleChan(telChan);
+gwAppChanIntercom判断是否是intercom的标记值
+FUNC_KEY_MCAST_PAGE组播内容操作
+FUNC_KEY_HARDKEY设置对应的keyevent
+autoDialNumber
+callCompleteNum
+dialInputbuf
+talkInputbuf
+dialPrefixNumber
+
+getInfoFtntEventXmlContent获取对应的INFO消息中的Event字段
+EXTENDED_UI_CALLEVENT_RECORD通过该宏触发操作
+application/ftnt-service-event+xml Content-Type中的内容
+<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n
+screenKey.c下设置对应的softkey部分的显示设置内容
+uiScreenKey.c下对应的softkey和物理按键的映射关系
+screenSoftkeyConfigGet
+Osipdialog.c下定义对应的会话建立消息发送对应的.h文件中定义了sip的各种方法
+dialog有不同的创建状态，用于判断当前状态是否符合对应的处理情景
+sipCallProcessTask处理不同的sip流程
+sipDtmfSend处理调用SIP_CALL_INFO部分内容
+
+
+SIP_LINE_CONFIG下有对应的user agent的对应存储数组
+
+LLDP  -DSUPPORT_LLDP增加对应的LLDP的支持项
+修改gwQos.c部分删除修改gwQosPolicySet中voiceSignalPolicy函数部分
+
+修改functionkeyset.htm下增加对应的key event值Grouppage和Intercom 在uipai.h下定义
+externConsoleSet.c下ReadEcMultifuncKeySubtype和WriteEcMultifuncKeySubtype
+Funckeyset.c下ReadMultifuncKeySubtype WriteMultifuncKeySubtype
+uiListConf.c下修改增加"F_INTERCOM","F_GROUPPAGING"对应的intercom部分在keyevent下并未增加对应的功能处理
